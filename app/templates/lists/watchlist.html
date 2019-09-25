@@ -1,0 +1,60 @@
+{% extends "lists/list_base.html" %}
+
+{% block page_title %}Watchlist{% endblock %}
+
+{% block table_title %}Banned Users{% endblock %}
+
+{% block table_data %}
+    <thead>
+    <tr>
+        <th class="no-sort no-search">Photo</th>
+        <th>Intra ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th class="no-sort">Reason</th>
+        <th class="no-search">Added</th>
+        <th class="no-sort no-search"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for bu in banned %}
+        <tr>
+            <td class="text-center">
+                <a href="#" data-toggle="popover" data-img="{{ photos.url(bu.photo or "unknown.png") }}">
+                    <img alt="{{ bu.intra_id }}" src="{{ photos.url(bu.photo or "unknown.png") }}?thumb=True">
+                </a>
+            </td>
+            <td>
+                <a target="_blank" href="https://profile.intra.42.fr/users/{{ bu.intra_id }}">{{ bu.intra_id }}</a>
+            </td>
+            <td>
+                <a href="#" class="editable" data-pk="{{ bu.id }}"
+                   data-url="{{ url_for("watchlist.edit_first_name") }}"
+                   data-title="First Name">{{ bu.first_name }}</a>
+            </td>
+            <td>
+                <a href="#" class="editable" data-pk="{{ bu.id }}"
+                   data-url="{{ url_for("watchlist.edit_last_name") }}"
+                   data-title="Last Name">{{ bu.last_name }}</a>
+            </td>
+            <td>
+                <a href="#" class="editable" data-pk="{{ bu.id }}"
+                   data-url="{{ url_for("watchlist.edit_reason") }}"
+                   data-title="Reason">{{ bu.reason }}</a>
+            </td>
+            <td>{{ moment(bu.timestamp).fromNow() }}</td>
+            <td class="text-center">
+                <a class="btn btn-danger confirm-delete"
+                   data-user="{{ bu.intra_id }}"
+                   href="{{ url_for("watchlist.remove_from_watchlist", id=bu.id) }}">Delete</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+{% endblock %}
+
+{% block form_title %}Add to Watchlist{% endblock %}
+
+{% block form_content %}
+    {{ wtf.quick_form(form, action=url_for("watchlist.add_to_watchlist"), button_map={"submit":"primary"}) }}
+{% endblock %}

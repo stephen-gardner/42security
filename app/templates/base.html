@@ -1,0 +1,106 @@
+{% extends "bootstrap/base.html" %}
+
+{% block html_attribs %} lang="en"{% endblock %}
+
+{% block title %}{% if title %}{{ title }} - 42 Security{% else %}42 Security{% endif %}{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        #body-container {
+            min-height: 100%;
+            position: relative;
+        }
+
+        #content-container {
+            padding-bottom: 60px; /* Height of the footer */
+        }
+
+        #footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px; /* Height of the footer */
+        }
+    </style>
+    {% block styles_extra %}{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {% block scripts_extra %}{% endblock %}
+{% endblock %}
+
+{% block navbar %}
+    <div id="body-container">
+    <div id="header">
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{{ url_for("main.index") }}">42 Security</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        {% if current_user.is_authenticated %}
+                            <li><a target="_blank" href="http://cam.42.us.org/">Cameras</a></li>
+                            <li><a target="_blank" href="https://heimdall.42.us.org/">Heimdall</a></li>
+                            <li><a target="_blank" href="https://nostromo.42.us.org/">Nostromo</a></li>
+                            <li><a href="{{ url_for("staff.stafflist") }}">Staff</a></li>
+                            <li><a href="{{ url_for("watchlist.watchlist") }}">Watchlist</a></li>
+                        {% endif %}
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if current_user.is_anonymous %}
+                            <li><a href="{{ url_for("auth.login") }}">Login</a></li>
+                        {% else %}
+                            <li><a href="{{ url_for("auth.logout") }}">Logout</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="content-container" class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == "message" %}
+                        {% set category = "info" %}
+                    {% endif %}
+                    <div class="alert alert-{{ category }} alert-dismissible">
+                        <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </span>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block app_content %}{% endblock %}
+    </div>
+
+    <div id="footer">
+        <div class="container text-center">
+            <span class="text-muted">
+                Designed by <a target="_blank" href="https://github.com/stephen-gardner">quartz</a>.
+            </span>
+        </div>
+    </div>
+    </div>
+{% endblock %}

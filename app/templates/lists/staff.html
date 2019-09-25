@@ -1,0 +1,77 @@
+{% extends "lists/list_base.html" %}
+
+{% block page_title %}Staff{% endblock %}
+
+{% block table_title %}Staff Members{% endblock %}
+
+{% block table_data %}
+    <thead>
+    <tr>
+        <th class="no-sort no-search">Photo</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Role</th>
+        <th class="no-sort">Contact</th>
+        <th>Added</th>
+        <th class="no-sort no-search"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for sm in staff_members %}
+        <tr>
+            <td class="text-center">
+                <a href="#" data-toggle="popover" data-img="{{ photos.url(sm.photo or "unknown.png") }}">
+                    <img alt="{{ sm.first_name }}" src="{{ photos.url(sm.photo or "unknown.png") }}?thumb=True">
+                </a>
+            </td>
+            <td>
+                <a href="#" class="editable" data-pk="{{ sm.id }}"
+                   data-url="{{ url_for("staff.edit_first_name") }}"
+                   data-title="First Name">{{ sm.first_name }}</a>
+            </td>
+            <td>
+                <a href="#" class="editable" data-pk="{{ sm.id }}"
+                   data-url="{{ url_for("staff.edit_last_name") }}"
+                   data-title="Last Name">{{ sm.last_name }}</a>
+            </td>
+            <td>
+                <a href="#" class="editable" data-pk="{{ sm.id }}"
+                   data-url="{{ url_for("staff.edit_role") }}"
+                   data-title="Role">{{ sm.role }}</a>
+            </td>
+            <td>
+                <p class="text-nowrap">
+                    <span class="glyphicon glyphicon-comment"></span>
+                    <a href="#" class="editable-empty" data-pk="{{ sm.id }}"
+                       data-url="{{ url_for("staff.edit_slack") }}"
+                       data-title="Slack ID">{{ sm.slack }}</a>
+                </p>
+                <p class="text-nowrap">
+                    <span class="glyphicon glyphicon-phone-alt"></span>
+                    <a href="#" class="editable-empty" data-pk="{{ sm.id }}"
+                       data-url="{{ url_for("staff.edit_phone") }}"
+                       data-title="Phone Number">{{ sm.phone }}</a>
+                </p>
+                <p class="text-nowrap">
+                    <span class="glyphicon glyphicon-envelope"></span>
+                    <a href="#" class="editable-empty" data-pk="{{ sm.id }}"
+                       data-url="{{ url_for("staff.edit_email") }}"
+                       data-title="Email">{{ sm.email }}</a>
+                </p>
+            </td>
+            <td>{{ moment(sm.timestamp).fromNow() }}</td>
+            <td class="text-center">
+                <a class="btn btn-danger confirm-delete"
+                   href="{{ url_for("staff.remove_from_staff", id=sm.id) }}"
+                   data-user="{{ sm.first_name }}">Delete</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+{% endblock %}
+
+{% block form_title %}Add to Staff{% endblock %}
+
+{% block form_content %}
+    {{ wtf.quick_form(form, action=url_for("staff.add_to_staff"), button_map={"submit":"primary"}) }}
+{% endblock %}
