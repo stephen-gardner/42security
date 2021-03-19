@@ -13,7 +13,7 @@ Flask-Uploads==0.2.1
 Flask-WTF==0.14.2
 gevent==1.4.0
 greenlet==0.4.15
-idna==2.8
+idna==3.1
 itsdangerous==1.1.0
 Jinja2==2.10.1
 Mako==1.1.0
